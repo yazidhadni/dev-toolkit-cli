@@ -3,11 +3,6 @@ import subprocess
 
 import click
 
-# TODO:
-# [x] create folders
-# [] create virtualenv
-# [] create pyproject.toml
-
 # TODO ideas:
 # [] add --language to init command to enable user to create a gitignore based on language (python, js, etc)
 
@@ -31,6 +26,15 @@ def _create_virtualenv(folder_path: pathlib.Path) -> None:
     subprocess.run(["uv", "venv"], cwd=folder_path)
 
 
+def _run_lint(folder_path: pathlib.Path) -> None:
+    try:
+        subprocess.run(["uv", "run", "ruff", "check"], cwd=folder_path)
+    except FileNotFoundError:
+        raise click.ClickException(
+            f"uv not installed. Please install uv -> https://docs.astral.sh/uv/getting-started/installation/"
+        )
+
+
 @cli.command()
 @click.argument("path")
 def init(path: str):
@@ -44,8 +48,12 @@ def init(path: str):
 
 # TODO
 @cli.command()
-def check():
-    pass
+@click.argument("path")
+def check(path: str):
+    path_obj = pathlib.Path(path).resolve()
+    if not path_obj.is_dir():
+        raise click.BadParameter(f"No such directory: {path_obj.absolute()}")
+    _run_lint(path_obj)
 
 
 @cli.command()

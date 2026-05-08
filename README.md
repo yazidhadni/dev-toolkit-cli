@@ -1,5 +1,8 @@
 # CLI tool that automates my dev workflow
 
+## Requirements
+- uv
+
 CLI tool (using `click`) that automates my dev workflow:
 - `init` command: scaffolds a new Python project (creates folders, virtualenv, .gitignore, pyproject.toml)
 - `check` command: runs linter + type checker + tests in sequence
