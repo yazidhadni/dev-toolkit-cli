@@ -22,7 +22,12 @@ def _create_gitignore_file(path: pathlib.Path) -> None:
 
 
 def _create_virtualenv(folder_path: pathlib.Path) -> None:
-    subprocess.run(["uv", "init"], cwd=folder_path)
+    try:
+        subprocess.run(["uv", "init"], cwd=folder_path)
+    except FileNotFoundError:
+        raise click.ClickException(
+            "uv not installed. Please install uv -> https://docs.astral.sh/uv/getting-started/installation/"
+        )
     subprocess.run(["uv", "venv"], cwd=folder_path)
 
 
@@ -31,7 +36,7 @@ def _run_lint(folder_path: pathlib.Path) -> None:
         subprocess.run(["uv", "run", "ruff", "check"], cwd=folder_path)
     except FileNotFoundError:
         raise click.ClickException(
-            f"uv not installed. Please install uv -> https://docs.astral.sh/uv/getting-started/installation/"
+            "uv not installed. Please install uv -> https://docs.astral.sh/uv/getting-started/installation/"
         )
 
 
