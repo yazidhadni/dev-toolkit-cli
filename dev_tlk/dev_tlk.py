@@ -40,6 +40,10 @@ def _run_lint(folder_path: pathlib.Path) -> None:
         )
 
 
+def _run_type_checker(folder_path: pathlib.Path) -> None:
+    subprocess.run(["uv", "run", "mypy", "."], cwd=folder_path, check=True)
+
+
 @cli.command()
 @click.argument("path")
 def init(path: str):
@@ -51,7 +55,6 @@ def init(path: str):
     click.echo(f"Project ready at {path_obj}")
 
 
-# TODO
 @cli.command()
 @click.argument("path")
 def check(path: str):
@@ -59,8 +62,10 @@ def check(path: str):
     if not path_obj.is_dir():
         raise click.BadParameter(f"No such directory: {path_obj.absolute()}")
     _run_lint(path_obj)
+    _run_type_checker(path_obj)
 
 
+# TODO
 @cli.command()
 def release():
     pass
