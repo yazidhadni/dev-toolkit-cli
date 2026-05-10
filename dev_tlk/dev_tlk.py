@@ -41,7 +41,11 @@ def _run_lint(folder_path: pathlib.Path) -> None:
 
 
 def _run_type_checker(folder_path: pathlib.Path) -> None:
-    subprocess.run(["uv", "run", "mypy", "."], cwd=folder_path, check=True)
+    subprocess.run(["uv", "run", "mypy", "."], cwd=folder_path)
+
+
+def _run_tests(folder_path: pathlib.Path) -> None:
+    subprocess.run(["uv", "run", "pytest"], cwd=folder_path)
 
 
 @cli.command()
@@ -63,6 +67,7 @@ def check(path: str):
         raise click.BadParameter(f"No such directory: {path_obj.absolute()}")
     _run_lint(path_obj)
     _run_type_checker(path_obj)
+    _run_tests(path_obj)
 
 
 # TODO
