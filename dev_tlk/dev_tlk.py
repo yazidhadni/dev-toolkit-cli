@@ -3,6 +3,8 @@ import subprocess
 
 import click
 
+from .enums import Version
+
 # TODO ideas:
 # [] add --language to init command to enable user to create a gitignore based on language (python, js, etc)
 
@@ -70,7 +72,23 @@ def check(path: str):
     _run_tests(path_obj)
 
 
+def _bump_version(bump: Version):
+    subprocess.run(["uv", "version", "--bump", bump.value])
+
+
+def _create_git_tag():
+    pass
+
+
+def _generate_changelog_from_commit():
+    # TODO: collect commits between 2 tags and format them into release notes
+    pass
+
+
 # TODO
 @cli.command()
-def release():
-    pass
+@click.option("--bump", nargs=1, type=click.Choice(Version, case_sensitive=False))
+def release(bump):
+    _bump_version(bump)
+    _create_git_tag()
+    _generate_changelog_from_commit()
